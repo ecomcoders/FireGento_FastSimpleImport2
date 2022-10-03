@@ -801,7 +801,7 @@ class Category extends \Magento\ImportExport\Model\Import\AbstractEntity
     {
         /** @var $category \Magento\Catalog\Model\Category */
         $category = $this->categoryRepository->get($categoryId);
-        
+
         foreach ($category->getStoreIds() as $storeId) {
             if ($storeId == 0) {
                 continue;
@@ -1054,7 +1054,7 @@ class Category extends \Magento\ImportExport\Model\Import\AbstractEntity
             return $rowData[CategoryModel::KEY_NAME];
         }
 
-        $categoryParts = $this->explodeEscaped($this->_scopeConfig->getValue(Config::XML_PATH_CATEGORY_PATH_SEPERATOR), $rowData[self::COL_CATEGORY]);
+        $categoryParts = $this->explodeEscaped($rowData[self::COL_CATEGORY], $this->_scopeConfig->getValue(Config::XML_PATH_CATEGORY_PATH_SEPERATOR));
         return end($categoryParts);
     }
 
@@ -1063,7 +1063,7 @@ class Category extends \Magento\ImportExport\Model\Import\AbstractEntity
      * @param string $string
      * @return array
      */
-    protected function explodeEscaped($delimiter = '/', $string)
+    protected function explodeEscaped($string, $delimiter = '/')
     {
         $exploded = explode($delimiter, $string);
         $fixed = [];
@@ -1100,7 +1100,7 @@ class Category extends \Magento\ImportExport\Model\Import\AbstractEntity
             $categoryParts = explode('/', $this->categoriesWithRoots[$rowData[self::COL_ROOT]][$rowData[self::COL_CATEGORY]][CategoryModel::KEY_PATH]);
             $parent = $categoryParts[count($categoryParts) - 2];
         } else {
-            $categoryParts = $this->explodeEscaped($this->_scopeConfig->getValue(Config::XML_PATH_CATEGORY_PATH_SEPERATOR), $rowData[self::COL_CATEGORY]);
+            $categoryParts = $this->explodeEscaped($rowData[self::COL_CATEGORY], $this->_scopeConfig->getValue(Config::XML_PATH_CATEGORY_PATH_SEPERATOR));
             array_pop($categoryParts);
             $parent = $this->implodeEscaped($this->_scopeConfig->getValue(Config::XML_PATH_CATEGORY_PATH_SEPERATOR), $categoryParts);
         }
